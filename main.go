@@ -1,10 +1,7 @@
 package main
 
 import (
-	"errors"
 	"fmt"
-	"net"
-	"os"
 )
 
 const (
@@ -32,59 +29,8 @@ func main() {
 		grid[i] = make([]uint8, width)
 	}
 
-	// Some testing for the drop.
-	printGrid(grid)
-	err := drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-	err = drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-	err = drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-	err = drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-	err = drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-	err = drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-	err = drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-	err = drop(&grid, 3)
-	if err != nil {
-		fmt.Printf("Error: %s", err)
-	}
-	printGrid(grid)
-
-	// Some testing for the grid checkWin
-	// fmt.Println()
-	// grid[0][0] = 1
-	// grid[2][2] = 1
-	// grid[3][3] = 1
-	// grid[4][4] = 1
-	// for i := 0; i < len(grid); i++ {
-	// 	fmt.Println(grid[i])
-	// }
-	// fmt.Println(checkWin(grid))
+	// Remove into its own file
+	test(grid)
 
 	// Game loop
 
@@ -105,55 +51,6 @@ func printGrid(grid [][]uint8) {
 	fmt.Println()
 }
 
-func startServer() {
-	fmt.Println("Server Running...")
-	server, err := net.Listen(SERVER_TYPE, SERVER_HOST+":"+SERVER_PORT)
-	if err != nil {
-		fmt.Println("Error listening:", err.Error())
-		os.Exit(1)
-	}
-	defer server.Close()
-	fmt.Println("Listening on " + SERVER_HOST + ":" + SERVER_PORT)
-	fmt.Println("Waiting for client...")
-	for {
-		connection, err := server.Accept()
-		if err != nil {
-			fmt.Println("Error accepting: ", err.Error())
-			os.Exit(1)
-		}
-		fmt.Println("client connected")
-		go processClient(connection)
-	}
-}
-
-func processClient(connection net.Conn) {
-	buffer := make([]byte, 1024)
-	mLen, err := connection.Read(buffer)
-	if err != nil {
-		fmt.Println("Error reading:", err.Error())
-	}
-	fmt.Println("Received: ", string(buffer[:mLen]))
-	_, err = connection.Write([]byte("Thanks! Got your message:" + string(buffer[:mLen])))
-	connection.Close()
-}
-
-func connectClient() {
-	//establish connection
-	connection, err := net.Dial(SERVER_TYPE, SERVER_HOST+":"+SERVER_PORT)
-	if err != nil {
-		panic(err)
-	}
-	///send some data
-	_, err = connection.Write([]byte("Hello Server! Greetings."))
-	buffer := make([]byte, 1024)
-	mLen, err := connection.Read(buffer)
-	if err != nil {
-		fmt.Println("Error reading:", err.Error())
-	}
-	fmt.Println("Received: ", string(buffer[:mLen]))
-	defer connection.Close()
-}
-
 // Grid is 6 high by 7 wide. Alternating colors.
 
 // Flags
@@ -169,58 +66,55 @@ func parseCommands() {
 
 }
 
-func checkWin(grid [][]uint8) bool { // Pass in the grid
-	// Check all up-down
-	for y := 0; y < 3; y++ {
-		for x := 0; x < width; x++ {
-			if grid[y][x] == 1 && grid[y+1][x] == 1 && grid[y+2][x] == 1 && grid[y+3][x] == 1 {
-				return true
-			}
-		}
+func test(grid [][]uint8) {
+	// Some testing for the Drop.
+	printGrid(grid)
+	err := Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
 	}
-
-	// Check all left-right
-	for y := 0; y < height; y++ {
-		for x := 0; x < 4; x++ {
-			if grid[y][x] == 1 && grid[y][x+1] == 1 && grid[y][x+2] == 1 && grid[y][x+3] == 1 {
-				return true
-			}
-		}
+	printGrid(grid)
+	err = Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
 	}
-
-	// Check all diagonals
-	// Check left to right diagonals
-	for y := 0; y < 3; y++ {
-		for x := 0; x < 4; x++ {
-			if grid[y][x] == 1 && grid[y+1][x+1] == 1 && grid[y+2][x+2] == 1 && grid[y+3][x+3] == 1 {
-				return true
-			}
-		}
+	printGrid(grid)
+	err = Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
 	}
-
-	// Check right to left diagonals
-	for y := 0; y < 3; y++ {
-		for x := width - 1; x > 2; x-- {
-			if grid[y][x] == 1 && grid[y+1][x-1] == 1 && grid[y+2][x-2] == 1 && grid[y+3][x-3] == 1 {
-				return true
-			}
-		}
+	printGrid(grid)
+	err = Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
 	}
-
-	return false
-}
-
-func drop(grid *[][]uint8, column int) error { // pass in the grid and which column the thing was dropped
-	if column > width {
-		return errors.New("can't select that column")
+	printGrid(grid)
+	err = Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
 	}
-	for i := height - 1; i >= 0; i-- {
-		if (*grid)[i][column] == 0 {
-			(*grid)[i][column] = 1
-			return nil
-		}
+	printGrid(grid)
+	err = Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
 	}
+	printGrid(grid)
+	err = Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
+	err = Drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
 
-	fmt.Println("ERROR!")
-	return errors.New("no space in that position")
+	// Some testing for the grid checkWin
+	// fmt.Println()
+	// grid[0][0] = 1
+	// grid[2][2] = 1
+	// grid[3][3] = 1
+	// grid[4][4] = 1
+	// printGrid(grid)
 }
