@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -30,21 +31,60 @@ func main() {
 	for i := range grid {
 		grid[i] = make([]uint8, width)
 	}
-	// fmt.Println(grid)
-	for i := 0; i < len(grid); i++ {
-		fmt.Println(grid[i])
+
+	// Some testing for the drop.
+	printGrid(grid)
+	err := drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
 	}
+	printGrid(grid)
+	err = drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
+	err = drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
+	err = drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
+	err = drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
+	err = drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
+	err = drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
+	err = drop(&grid, 3)
+	if err != nil {
+		fmt.Printf("Error: %s", err)
+	}
+	printGrid(grid)
 
 	// Some testing for the grid checkWin
-	fmt.Println()
-	grid[0][0] = 1
-	grid[2][2] = 1
-	grid[3][3] = 1
-	grid[4][4] = 1
-	for i := 0; i < len(grid); i++ {
-		fmt.Println(grid[i])
-	}
-	fmt.Println(checkWin(grid))
+	// fmt.Println()
+	// grid[0][0] = 1
+	// grid[2][2] = 1
+	// grid[3][3] = 1
+	// grid[4][4] = 1
+	// for i := 0; i < len(grid); i++ {
+	// 	fmt.Println(grid[i])
+	// }
+	// fmt.Println(checkWin(grid))
 
 	// Game loop
 
@@ -55,6 +95,14 @@ func main() {
 	// } else if first == "2" {
 	// 	connectClient()
 	// }
+}
+
+func printGrid(grid [][]uint8) {
+	// fmt.Println(grid)
+	for i := 0; i < len(grid); i++ {
+		fmt.Println(grid[i])
+	}
+	fmt.Println()
 }
 
 func startServer() {
@@ -162,11 +210,17 @@ func checkWin(grid [][]uint8) bool { // Pass in the grid
 	return false
 }
 
-func drop(grid [][]uint8) { // pass in the grid and which column the thing was dropped
+func drop(grid *[][]uint8, column int) error { // pass in the grid and which column the thing was dropped
+	if column > width {
+		return errors.New("can't select that column")
+	}
+	for i := height - 1; i >= 0; i-- {
+		if (*grid)[i][column] == 0 {
+			(*grid)[i][column] = 1
+			return nil
+		}
+	}
 
-}
-
-// Print the current board state
-func printBoard(grid [][]uint8) {
-
+	fmt.Println("ERROR!")
+	return errors.New("no space in that position")
 }
