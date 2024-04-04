@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
 const (
@@ -16,23 +17,61 @@ const (
 func main() {
 
 	// Make the grid
-	for i := 0; i < 6; i++ {
-		for i := 0; i < 7; i++ {
-			fmt.Printf("| ")
-		}
-		fmt.Printf("|\n")
-	}
+	// for i := 0; i < 6; i++ {
+	// 	for i := 0; i < 7; i++ {
+	// 		fmt.Printf("| ")
+	// 	}
+	// 	fmt.Printf("|\n")
+	// }
 
 	// Initialize the grid
-	grid := make([][]uint8, height)
+	grid := make([][]int, height)
 	for i := range grid {
-		grid[i] = make([]uint8, width)
+		grid[i] = make([]int, width)
 	}
 
 	// Remove into its own file
-	test(grid)
+	// test(grid)
 
 	// Game loop
+	var input string
+	player1Turn := true
+	currentPlayer := 1
+	for {
+		printGrid(grid)
+		fmt.Println("Chose a column from 1-7")
+		// TODO: Should check if new input was put or just enter was pressed.
+		fmt.Scanln(&input)
+		inputInt, err := strconv.Atoi(input)
+		if err != nil {
+			fmt.Println("Cannot convert to int! Err: ", err)
+		}
+
+		if inputInt > 7 || inputInt < 1 {
+			fmt.Println("Can't accept that number!")
+			continue
+		}
+
+		inputInt -= 1
+		if player1Turn {
+			Drop(&grid, inputInt, currentPlayer)
+		} else {
+			Drop(&grid, inputInt, currentPlayer)
+		}
+		won := CheckWin(grid, currentPlayer)
+		if won {
+			printGrid(grid)
+			fmt.Printf("Player %d won!!\n", currentPlayer)
+			break
+		}
+
+		if currentPlayer == 1 {
+			currentPlayer = 2
+		} else {
+			currentPlayer = 1
+		}
+	}
+	fmt.Println("Finished")
 
 	// var first string
 	// fmt.Scanln(&first)
@@ -43,7 +82,7 @@ func main() {
 	// }
 }
 
-func printGrid(grid [][]uint8) {
+func printGrid(grid [][]int) {
 	// fmt.Println(grid)
 	for i := 0; i < len(grid); i++ {
 		fmt.Println(grid[i])
@@ -66,45 +105,45 @@ func parseCommands() {
 
 }
 
-func test(grid [][]uint8) {
+func test(grid [][]int) {
 	// Some testing for the Drop.
 	printGrid(grid)
-	err := Drop(&grid, 3)
+	err := Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-	err = Drop(&grid, 3)
+	err = Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-	err = Drop(&grid, 3)
+	err = Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-	err = Drop(&grid, 3)
+	err = Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-	err = Drop(&grid, 3)
+	err = Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-	err = Drop(&grid, 3)
+	err = Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-	err = Drop(&grid, 3)
+	err = Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-	err = Drop(&grid, 3)
+	err = Drop(&grid, 3, 1)
 	if err != nil {
 		fmt.Printf("Error: %s", err)
 	}
