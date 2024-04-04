@@ -30,15 +30,31 @@ func main() {
 	for i := range grid {
 		grid[i] = make([]uint8, width)
 	}
-	fmt.Println(grid)
-
-	var first string
-	fmt.Scanln(&first)
-	if first == "1" {
-		startServer()
-	} else if first == "2" {
-		connectClient()
+	// fmt.Println(grid)
+	for i := 0; i < len(grid); i++ {
+		fmt.Println(grid[i])
 	}
+
+	// Some testing for the grid checkWin
+	fmt.Println()
+	grid[0][0] = 1
+	grid[2][2] = 1
+	grid[3][3] = 1
+	grid[4][4] = 1
+	for i := 0; i < len(grid); i++ {
+		fmt.Println(grid[i])
+	}
+	fmt.Println(checkWin(grid))
+
+	// Game loop
+
+	// var first string
+	// fmt.Scanln(&first)
+	// if first == "1" {
+	// 	startServer()
+	// } else if first == "2" {
+	// 	connectClient()
+	// }
 }
 
 func startServer() {
@@ -91,3 +107,66 @@ func connectClient() {
 }
 
 // Grid is 6 high by 7 wide. Alternating colors.
+
+// Flags
+// -p = port
+// -h = host
+// -d = difficulty (for playing solo)
+
+// Commmands:
+// Host
+// Play Solo
+// Conenct
+func parseCommands() {
+
+}
+
+func checkWin(grid [][]uint8) bool { // Pass in the grid
+	// Check all up-down
+	for y := 0; y < 3; y++ {
+		for x := 0; x < width; x++ {
+			if grid[y][x] == 1 && grid[y+1][x] == 1 && grid[y+2][x] == 1 && grid[y+3][x] == 1 {
+				return true
+			}
+		}
+	}
+
+	// Check all left-right
+	for y := 0; y < height; y++ {
+		for x := 0; x < 4; x++ {
+			if grid[y][x] == 1 && grid[y][x+1] == 1 && grid[y][x+2] == 1 && grid[y][x+3] == 1 {
+				return true
+			}
+		}
+	}
+
+	// Check all diagonals
+	// Check left to right diagonals
+	for y := 0; y < 3; y++ {
+		for x := 0; x < 4; x++ {
+			if grid[y][x] == 1 && grid[y+1][x+1] == 1 && grid[y+2][x+2] == 1 && grid[y+3][x+3] == 1 {
+				return true
+			}
+		}
+	}
+
+	// Check right to left diagonals
+	for y := 0; y < 3; y++ {
+		for x := width - 1; x > 2; x-- {
+			if grid[y][x] == 1 && grid[y+1][x-1] == 1 && grid[y+2][x-2] == 1 && grid[y+3][x-3] == 1 {
+				return true
+			}
+		}
+	}
+
+	return false
+}
+
+func drop(grid [][]uint8) { // pass in the grid and which column the thing was dropped
+
+}
+
+// Print the current board state
+func printBoard(grid [][]uint8) {
+
+}
