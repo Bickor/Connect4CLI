@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strconv"
 )
 
 const (
@@ -30,55 +29,60 @@ func main() {
 		grid[i] = make([]int, width)
 	}
 
+	// Open server
+	//Receive connection
+	// Send first board
+	// Wait for response
+
 	// Remove into its own file
-	// test(grid)
+	test(grid)
 
 	// Game loop
-	var input string
-	player1Turn := true
-	currentPlayer := 1
-	for {
-		printGrid(grid)
-		fmt.Println("Chose a column from 1-7")
-		// TODO: Should check if new input was put or just enter was pressed.
-		fmt.Scanln(&input)
-		inputInt, err := strconv.Atoi(input)
-		if err != nil {
-			fmt.Println("Cannot convert to int! Err: ", err)
-		}
+	// var input string
+	// player1Turn := true
+	// currentPlayer := 1
+	// for {
+	// 	printGrid(grid)
+	// 	fmt.Println("Chose a column from 1-7")
+	// 	// TODO: Should check if new input was put or just enter was pressed.
+	// 	fmt.Scanln(&input)
+	// 	inputInt, err := strconv.Atoi(input)
+	// 	if err != nil {
+	// 		fmt.Println("Cannot convert to int! Err: ", err)
+	// 	}
 
-		if inputInt > 7 || inputInt < 1 {
-			fmt.Println("Can't accept that number!")
-			continue
-		}
+	// 	if inputInt > 7 || inputInt < 1 {
+	// 		fmt.Println("Can't accept that number!")
+	// 		continue
+	// 	}
 
-		inputInt -= 1
-		if player1Turn {
-			Drop(&grid, inputInt, currentPlayer)
-		} else {
-			Drop(&grid, inputInt, currentPlayer)
-		}
-		won := CheckWin(grid, currentPlayer)
-		if won {
-			printGrid(grid)
-			fmt.Printf("Player %d won!!\n", currentPlayer)
-			break
-		}
+	// 	inputInt -= 1
+	// 	if player1Turn {
+	// 		Drop(&grid, inputInt, currentPlayer)
+	// 	} else {
+	// 		Drop(&grid, inputInt, currentPlayer)
+	// 	}
+	// 	won := CheckWin(grid, currentPlayer)
+	// 	if won {
+	// 		printGrid(grid)
+	// 		fmt.Printf("Player %d won!!\n", currentPlayer)
+	// 		break
+	// 	}
 
-		if currentPlayer == 1 {
-			currentPlayer = 2
-		} else {
-			currentPlayer = 1
-		}
-	}
-	fmt.Println("Finished")
+	// 	if currentPlayer == 1 {
+	// 		currentPlayer = 2
+	// 	} else {
+	// 		currentPlayer = 1
+	// 	}
+	// }
+	// fmt.Println("Finished")
 
 	// var first string
 	// fmt.Scanln(&first)
 	// if first == "1" {
-	// 	startServer()
+	// 	StartServer()
 	// } else if first == "2" {
-	// 	connectClient()
+	// 	ConnectClient()
 	// }
 }
 
@@ -148,7 +152,7 @@ func test(grid [][]int) {
 		fmt.Printf("Error: %s", err)
 	}
 	printGrid(grid)
-
+	ShowBoard(grid)
 	// Some testing for the grid checkWin
 	// fmt.Println()
 	// grid[0][0] = 1

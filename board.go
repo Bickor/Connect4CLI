@@ -60,3 +60,18 @@ func Drop(grid *[][]int, column int, player int) error { // pass in the grid and
 	fmt.Println("ERROR!")
 	return errors.New("no space in that position")
 }
+
+func ShowBoard(grid [][]int) {
+	for y := 0; y < 6; y++ {
+		for x := 0; x < 7; x++ {
+			fmt.Printf("|")
+			if grid[y][x] != 0 {
+				str := fmt.Sprint(grid[y][x])
+				fmt.Printf(str)
+			} else {
+				fmt.Printf(" ")
+			}
+		}
+		fmt.Printf("|\n")
+	}
+}
