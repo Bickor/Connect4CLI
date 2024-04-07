@@ -35,7 +35,7 @@ func main() {
 	// Wait for response
 
 	// Remove into its own file
-	test(grid)
+	// test(grid)
 
 	// Game loop
 	// var input string
@@ -84,6 +84,39 @@ func main() {
 	// } else if first == "2" {
 	// 	ConnectClient()
 	// }
+
+	//TODO: add msg value verification, and start sending slice.
+	//Server
+	// Create Server
+	var first string
+	fmt.Scanln(&first)
+	if first == "1" {
+		server, connection := StartServer()
+		defer server.Close()
+		// defer connection.Close()
+		for {
+			var serverMsg string
+			fmt.Scanln(&serverMsg)
+			SendMove(connection, serverMsg)
+			response := ReceiveMove(connection)
+			fmt.Println(response)
+		}
+	} else if first == "2" {
+		for {
+			connection := ConnectClient()
+			serverMsg := ReceiveMove(connection)
+			fmt.Println(serverMsg)
+			var clientMsg string
+			fmt.Scanln(&clientMsg)
+			SendMove(connection, clientMsg)
+		}
+	}
+
+	// Wait for client to connect
+	// Make the first move and send to client
+	// Wait for client to respond with their move
+
+	// Client
 }
 
 func printGrid(grid [][]int) {
