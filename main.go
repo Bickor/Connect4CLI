@@ -16,115 +16,91 @@ const (
 
 func main() {
 
-	// Make the grid
-	// for i := 0; i < 6; i++ {
-	// 	for i := 0; i < 7; i++ {
-	// 		fmt.Printf("| ")
-	// 	}
-	// 	fmt.Printf("|\n")
-	// }
-
 	// Initialize the grid
 	grid := make([][]int, height)
 	for i := range grid {
 		grid[i] = make([]int, width)
 	}
 
-	// Open server
-	//Receive connection
-	// Send first board
-	// Wait for response
-
-	// Remove into its own file
-	// test(grid)
-
-	// Game loop
-	// var input string
-	// player1Turn := true
-	// currentPlayer := 1
-	// for {
-	// 	printGrid(grid)
-	// 	fmt.Println("Chose a column from 1-7")
-	// 	// TODO: Should check if new input was put or just enter was pressed.
-	// 	fmt.Scanln(&input)
-	// 	inputInt, err := strconv.Atoi(input)
-	// 	if err != nil {
-	// 		fmt.Println("Cannot convert to int! Err: ", err)
-	// 	}
-
-	// 	if inputInt > 7 || inputInt < 1 {
-	// 		fmt.Println("Can't accept that number!")
-	// 		continue
-	// 	}
-
-	// 	inputInt -= 1
-	// 	if player1Turn {
-	// 		Drop(&grid, inputInt, currentPlayer)
-	// 	} else {
-	// 		Drop(&grid, inputInt, currentPlayer)
-	// 	}
-	// 	won := CheckWin(grid, currentPlayer)
-	// 	if won {
-	// 		printGrid(grid)
-	// 		fmt.Printf("Player %d won!!\n", currentPlayer)
-	// 		break
-	// 	}
-
-	// 	if currentPlayer == 1 {
-	// 		currentPlayer = 2
-	// 	} else {
-	// 		currentPlayer = 1
-	// 	}
-	// }
-	// fmt.Println("Finished")
-
-	// var first string
-	// fmt.Scanln(&first)
-	// if first == "1" {
-	// 	StartServer()
-	// } else if first == "2" {
-	// 	ConnectClient()
-	// }
-
-	//TODO: add msg value verification, and start sending slice.
-	//TODO: Receive grid, make move, send new grid
-	//Server
-	// Create Server
+	//TODO: add msg value verification
 	var first string
 	var move string
 	var msg [][]int
+	var gameFinished bool
 	fmt.Scanln(&first)
 	if first == "1" {
 		server, connection := StartServer()
 		defer server.Close()
-		// defer connection.Close()
 		msg = grid
 		for {
 			fmt.Println("Make your move, select a column from 1-7")
 			ShowBoard(msg)
-			fmt.Scanln(&move)
-			move, err := strconv.Atoi(move)
-			if err != nil {
-				fmt.Println("Cannot convert to int! Err: ", err)
+			validMove := false
+			for !validMove {
+				fmt.Scanln(&move)
+				move, err := strconv.Atoi(move)
+				if err != nil {
+					fmt.Println("Cannot convert to int! Err: ", err)
+				}
+				err = Drop(&msg, move-1, 1)
+				if err != nil {
+					fmt.Println("Not valid column, choose another!")
+				} else {
+					validMove = true
+				}
 			}
-			Drop(&msg, move, 1)
+
 			SendMove(connection, msg)
+			gameFinished = CheckWin(msg, 1)
+			if gameFinished {
+				ShowBoard(msg)
+				fmt.Println("You won!")
+				break
+			}
+
 			msg = ReceiveMove(connection)
-			fmt.Println(msg)
+			gameFinished = CheckWin(msg, 2)
+			if gameFinished {
+				ShowBoard(msg)
+				fmt.Println("You lost!")
+				break
+			}
 		}
 	} else if first == "2" {
+		connection := ConnectClient()
+		defer connection.Close()
 		for {
-			connection := ConnectClient()
 			msg = ReceiveMove(connection)
+			gameFinished = CheckWin(msg, 1)
+			if gameFinished {
+				ShowBoard(msg)
+				fmt.Println("You lost!")
+				break
+			}
 			fmt.Println("Make your move, select a column from 1-7")
 			ShowBoard(msg)
-			fmt.Scanln(&move)
-			move, err := strconv.Atoi(move)
-			if err != nil {
-				fmt.Println("Cannot convert to int! Err: ", err)
+			validMove := false
+			for !validMove {
+				fmt.Scanln(&move)
+				move, err := strconv.Atoi(move)
+				if err != nil {
+					fmt.Println("Cannot convert to int! Err: ", err)
+				}
+				err = Drop(&msg, move-1, 2)
+				if err != nil {
+					fmt.Println("Not valid column, choose another!")
+				} else {
+					validMove = true
+				}
 			}
-			Drop(&msg, move, 2)
+
 			SendMove(connection, msg)
+			gameFinished = CheckWin(msg, 2)
+			if gameFinished {
+				ShowBoard(msg)
+				fmt.Println("You won!")
+				break
+			}
 		}
 	}
 }

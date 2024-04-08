@@ -48,11 +48,12 @@ func ReceiveMove(connection net.Conn) [][]int {
 		fmt.Println("Something went wrong reading.")
 	}
 	var currentGrid [][]int
+
 	err = json.Unmarshal(buffer[:mLen], &currentGrid)
 	if err != nil {
 		fmt.Println("Error reading:", err.Error())
 	}
-	// message := string(buffer[:mLen])
+
 	return currentGrid
 }
 

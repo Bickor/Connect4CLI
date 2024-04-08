@@ -57,7 +57,6 @@ func Drop(grid *[][]int, column int, player int) error { // pass in the grid and
 		}
 	}
 
-	fmt.Println("ERROR!")
 	return errors.New("no space in that position")
 }
 
