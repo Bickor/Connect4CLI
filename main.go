@@ -86,6 +86,7 @@ func main() {
 	// }
 
 	//TODO: add msg value verification, and start sending slice.
+	//TODO: Receive grid, make move, send new grid
 	//Server
 	// Create Server
 	var first string
@@ -95,9 +96,9 @@ func main() {
 		defer server.Close()
 		// defer connection.Close()
 		for {
-			var serverMsg string
-			fmt.Scanln(&serverMsg)
-			SendMove(connection, serverMsg)
+			// var serverMsg string
+			//TODO: Make move on current grid
+			SendMove(connection, grid)
 			response := ReceiveMove(connection)
 			fmt.Println(response)
 		}
@@ -105,10 +106,9 @@ func main() {
 		for {
 			connection := ConnectClient()
 			serverMsg := ReceiveMove(connection)
+			//TODO: Make move
 			fmt.Println(serverMsg)
-			var clientMsg string
-			fmt.Scanln(&clientMsg)
-			SendMove(connection, clientMsg)
+			SendMove(connection, serverMsg)
 		}
 	}
 

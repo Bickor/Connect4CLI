@@ -1,6 +1,8 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
 	"net"
 	"os"
@@ -27,42 +29,51 @@ func StartServer() (net.Listener, net.Conn) {
 	// processClient(connection)
 }
 
-func SendMove(connection net.Conn, msg string) {
-	_, err := connection.Write([]byte(msg))
+func SendMove(connection net.Conn, grid [][]int) error {
+	serverMsg, err := json.Marshal(grid)
 	if err != nil {
-		fmt.Println("Something went wrong sending the move.")
+		return errors.New("something went wrong marshalling")
 	}
-
+	_, err = connection.Write(serverMsg)
+	if err != nil {
+		return errors.New("something went wrong sending the move")
+	}
+	return nil
 }
 
-func ReceiveMove(connection net.Conn) string {
+func ReceiveMove(connection net.Conn) [][]int {
 	buffer := make([]byte, 1024)
 	mLen, err := connection.Read(buffer)
 	if err != nil {
+		fmt.Println("Something went wrong reading.")
+	}
+	var currentGrid [][]int
+	err = json.Unmarshal(buffer[:mLen], &currentGrid)
+	if err != nil {
 		fmt.Println("Error reading:", err.Error())
 	}
-	message := string(buffer[:mLen])
-	return message
+	// message := string(buffer[:mLen])
+	return currentGrid
 }
 
-func processClient(connection net.Conn) {
-	defer connection.Close()
-	for {
-		buffer := make([]byte, 1024)
-		mLen, err := connection.Read(buffer)
-		if err != nil {
-			fmt.Println("Error reading:", err.Error())
-		}
-		message := string(buffer[:mLen])
-		fmt.Println("Received: ", message)
-		if message == "close" {
-			_, err = connection.Write([]byte("Closing! msg:" + string(buffer[:mLen])))
-			break
-		}
-		_, err = connection.Write([]byte("Thanks! Got your message:" + string(buffer[:mLen])))
-		// connection.Close()
-	}
-}
+// func processClient(connection net.Conn) {
+// 	defer connection.Close()
+// 	for {
+// 		buffer := make([]byte, 1024)
+// 		mLen, err := connection.Read(buffer)
+// 		if err != nil {
+// 			fmt.Println("Error reading:", err.Error())
+// 		}
+// 		message := string(buffer[:mLen])
+// 		fmt.Println("Received: ", message)
+// 		if message == "close" {
+// 			_, err = connection.Write([]byte("Closing! msg:" + string(buffer[:mLen])))
+// 			break
+// 		}
+// 		_, err = connection.Write([]byte("Thanks! Got your message:" + string(buffer[:mLen])))
+// 		// connection.Close()
+// 	}
+// }
 
 func ConnectClient() net.Conn {
 	//establish connection
