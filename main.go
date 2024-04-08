@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
 const (
@@ -90,33 +91,42 @@ func main() {
 	//Server
 	// Create Server
 	var first string
+	var move string
+	var msg [][]int
 	fmt.Scanln(&first)
 	if first == "1" {
 		server, connection := StartServer()
 		defer server.Close()
 		// defer connection.Close()
+		msg = grid
 		for {
-			// var serverMsg string
-			//TODO: Make move on current grid
-			SendMove(connection, grid)
-			response := ReceiveMove(connection)
-			fmt.Println(response)
+			fmt.Println("Make your move, select a column from 1-7")
+			ShowBoard(msg)
+			fmt.Scanln(&move)
+			move, err := strconv.Atoi(move)
+			if err != nil {
+				fmt.Println("Cannot convert to int! Err: ", err)
+			}
+			Drop(&msg, move, 1)
+			SendMove(connection, msg)
+			msg = ReceiveMove(connection)
+			fmt.Println(msg)
 		}
 	} else if first == "2" {
 		for {
 			connection := ConnectClient()
-			serverMsg := ReceiveMove(connection)
-			//TODO: Make move
-			fmt.Println(serverMsg)
-			SendMove(connection, serverMsg)
+			msg = ReceiveMove(connection)
+			fmt.Println("Make your move, select a column from 1-7")
+			ShowBoard(msg)
+			fmt.Scanln(&move)
+			move, err := strconv.Atoi(move)
+			if err != nil {
+				fmt.Println("Cannot convert to int! Err: ", err)
+			}
+			Drop(&msg, move, 2)
+			SendMove(connection, msg)
 		}
 	}
-
-	// Wait for client to connect
-	// Make the first move and send to client
-	// Wait for client to respond with their move
-
-	// Client
 }
 
 func printGrid(grid [][]int) {

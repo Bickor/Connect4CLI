@@ -62,6 +62,7 @@ func Drop(grid *[][]int, column int, player int) error { // pass in the grid and
 }
 
 func ShowBoard(grid [][]int) {
+	fmt.Println(" 1 2 3 4 5 6 7")
 	for y := 0; y < 6; y++ {
 		for x := 0; x < 7; x++ {
 			fmt.Printf("|")
