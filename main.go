@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"strconv"
 )
@@ -8,13 +9,23 @@ import (
 const (
 	height = 6
 	width  = 7
+)
 
+var (
 	SERVER_HOST = "localhost"
 	SERVER_PORT = "8080"
 	SERVER_TYPE = "tcp"
+
+	portFlag string
+	ipFlag   string
+	hostFlag bool
 )
 
 func main() {
+
+	flag.StringVar(&portFlag, "PortFlag", "8080", "Choose the port where you want to host the game")
+	flag.StringVar(&ipFlag, "IPFlag", "localhost", "Choose the IP where you want to host your game")
+	flag.BoolVar(&hostFlag, "HostFlag", false, "Choose the IP where you want to host your game")
 
 	// Initialize the grid
 	grid := make([][]int, height)
@@ -111,21 +122,6 @@ func printGrid(grid [][]int) {
 		fmt.Println(grid[i])
 	}
 	fmt.Println()
-}
-
-// Grid is 6 high by 7 wide. Alternating colors.
-
-// Flags
-// -p = port
-// -h = host
-// -d = difficulty (for playing solo)
-
-// Commmands:
-// Host
-// Play Solo
-// Conenct
-func parseCommands() {
-
 }
 
 func test(grid [][]int) {
