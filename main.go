@@ -23,9 +23,18 @@ var (
 
 func main() {
 
-	flag.StringVar(&portFlag, "PortFlag", "8080", "Choose the port where you want to host the game")
-	flag.StringVar(&ipFlag, "IPFlag", "localhost", "Choose the IP where you want to host your game")
-	flag.BoolVar(&hostFlag, "HostFlag", false, "Choose the IP where you want to host your game")
+	flag.StringVar(&portFlag, "port", "8080", "Choose the port where you want to host the game")
+	flag.StringVar(&ipFlag, "ip", "localhost", "Choose the IP where you want to host your game")
+	flag.BoolVar(&hostFlag, "host", false, "Choose the IP where you want to host your game")
+
+	flag.Parse()
+
+	SERVER_PORT = portFlag
+	SERVER_HOST = ipFlag
+
+	fmt.Println("Port: ", portFlag)
+	fmt.Println("ip: ", ipFlag)
+	fmt.Println("host: ", hostFlag)
 
 	// Initialize the grid
 	grid := make([][]int, height)
@@ -33,13 +42,11 @@ func main() {
 		grid[i] = make([]int, width)
 	}
 
-	//TODO: add msg value verification
-	var first string
 	var move string
 	var msg [][]int
 	var gameFinished bool
-	fmt.Scanln(&first)
-	if first == "1" {
+
+	if hostFlag {
 		server, connection := StartServer()
 		defer server.Close()
 		msg = grid
@@ -77,7 +84,7 @@ func main() {
 				break
 			}
 		}
-	} else if first == "2" {
+	} else {
 		connection := ConnectClient()
 		defer connection.Close()
 		for {
